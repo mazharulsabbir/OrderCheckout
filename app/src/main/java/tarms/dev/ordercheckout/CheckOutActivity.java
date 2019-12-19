@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.telephony.SmsManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -83,7 +82,7 @@ public class CheckOutActivity extends AppCompatActivity {
                         for (int i = 0; i < products.size(); i++) {
                             Products p = products.get(i);
 
-                            price += Integer.parseInt(p.getPrice().replace("$", ""));
+                            price += Double.parseDouble(p.getPrice().replace("$", ""));
                         }
 
                         aDouble = price;
@@ -104,13 +103,21 @@ public class CheckOutActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressLint("IntentReset")
     public void confirmOrderByMessage(View view) {
         String msg = "Hello! Dear Customer," +
                 "\n\n" +
                 "Thank you for your order. Your order no #xyz. Total cost is : " + aDouble + " " + currency;
 
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage("+8801825632294", null, msg, null, null);
+//        SmsManager smsManager = SmsManager.getDefault();
+//        smsManager.sendTextMessage("+8801825632294", null, msg, null, null);
+
+        Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+        sendIntent.putExtra("sms_body", msg);
+        sendIntent.putExtra("address", "+8801825632294");
+        sendIntent.setData(Uri.parse("smsto:"+"+8801825632294"));
+        sendIntent.setType("vnd.android-dir/mms-sms");
+        startActivity(sendIntent);
     }
 
     public void confirmOrderByCall(View view) {
