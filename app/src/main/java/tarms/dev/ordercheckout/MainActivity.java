@@ -1,22 +1,13 @@
 package tarms.dev.ordercheckout;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
@@ -31,12 +22,14 @@ public class MainActivity extends AppCompatActivity {
 
     private String[] productType = {"Black", "Running Shoes", "32 GB", "Thermostat", "Black", "Intel Pentium Gold, 8GB RAM, 128GB", "Green"};
 
-    private String[] productPrice = {"$540", "$100", "$20", "$249", "$299", "$549", "$130"};
+    private String[] productPrice = {"$540.9", "$100.56", "$20", "$249.99", "$299", "$549", "$130"};
 
     private int[] productImage = {R.drawable.eos_camera, R.drawable.nike_shoes, R.drawable.pendrive,
             R.drawable.smart_home_devices, R.drawable.solo3_base, R.drawable.surface_go, R.drawable.watch_man_green};
 
     private ArrayList<Products> selectedProduct = new ArrayList<>();
+
+    private boolean isVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +37,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Checkout");
+            getSupportActionBar().setTitle("Payment");
+        }
+
+        final MaterialButton checkOut = findViewById(R.id.check_out);
+
+        if (selectedProduct.isEmpty()) {
+            checkOut.setVisibility(View.GONE);
+            isVisible = false;
         }
 
         final List<Products> products = new ArrayList<>();
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         items.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         items.setHasFixedSize(true);
 
-        final CartAdapter adapter = new CartAdapter(getApplicationContext(), products);
+        final CartAdapter adapter = new CartAdapter(getApplicationContext(), products, "#cccccc", "#ffffff");
         items.setAdapter(adapter);
 
         adapter.setOnItemClickListener(new OnItemClickListener() {
@@ -77,10 +77,32 @@ public class MainActivity extends AppCompatActivity {
                         selectedProduct.add(products1);
                     }
                 }
+
+                if (selectedProduct.isEmpty()) {
+                    checkOut.setVisibility(View.GONE);
+
+                    isVisible = false;
+                } else {
+
+                    if (!isVisible) {
+                        checkOut.setVisibility(View.VISIBLE);
+
+                        checkOut.setAlpha(0.f);
+                        checkOut.setScaleX(0.f);
+                        checkOut.setScaleY(0.f);
+                        checkOut.animate()
+                                .alpha(1.f)
+                                .scaleX(1.f)
+                                .scaleY(1.f)
+                                .setDuration(300)
+                                .start();
+                    }
+
+                    isVisible = true;
+                }
             }
         });
 
-        MaterialButton checkOut = findViewById(R.id.check_out);
         checkOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

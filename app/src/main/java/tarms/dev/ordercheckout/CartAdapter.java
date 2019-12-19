@@ -23,9 +23,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ProductHolder>
     private Context context;
     private List<Products> products;
 
-    public CartAdapter(Context context, List<Products> products) {
+    private String selectedItemColor;
+    private String unSelectedItemColor;
+
+    public CartAdapter(Context context, List<Products> products, String selectedItemColor, String unSelectedItemColor) {
         this.context = context;
         this.products = products;
+        this.selectedItemColor = selectedItemColor;
+        this.unSelectedItemColor = unSelectedItemColor;
     }
 
     @NonNull
@@ -49,8 +54,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ProductHolder>
         Glide.with(context).load(product.getImage()).into(holder.pImage);
 
         if (product.isSelected()) {
-            holder.root.setCardBackgroundColor(Color.parseColor("#cccccc"));
-        } else holder.root.setCardBackgroundColor(Color.parseColor("#ffffff"));
+            holder.root.setCardBackgroundColor(Color.parseColor(selectedItemColor));
+        } else holder.root.setCardBackgroundColor(Color.parseColor(unSelectedItemColor));
     }
 
     @Override
